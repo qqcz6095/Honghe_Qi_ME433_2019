@@ -54,6 +54,9 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
+    TRISAbits.TRISA4 = 0; //A4 Output
+    TRISBbits.TRISB4 = 1; //B4 Input 
+    __builtin_enable_interrupts();
     while(1) {
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
