@@ -19632,36 +19632,22 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 </net>
 <net name="D+" class="0">
 <segment>
-<pinref part="U$1" gate="G$1" pin="4.RC8"/>
-<wire x1="19.05" y1="10.16" x2="11.43" y2="10.16" width="0.1524" layer="91"/>
-<label x="11.43" y="10.16" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="J1" gate="G$1" pin="D+"/>
 <wire x1="22.86" y1="92.71" x2="27.94" y2="92.71" width="0.1524" layer="91"/>
 <label x="26.67" y="92.71" size="1.778" layer="95"/>
 </segment>
-</net>
-<net name="D-" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="5.RC9"/>
-<wire x1="19.05" y1="5.08" x2="11.43" y2="5.08" width="0.1524" layer="91"/>
-<label x="11.43" y="5.08" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="J1" gate="G$1" pin="D-"/>
-<wire x1="22.86" y1="90.17" x2="27.94" y2="90.17" width="0.1524" layer="91"/>
-<label x="26.67" y="90.17" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="RB10" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="8.RB10"/>
 <wire x1="19.05" y1="-10.16" x2="13.97" y2="-10.16" width="0.1524" layer="91"/>
 <label x="15.24" y="-10.16" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="RB11" class="0">
+<net name="D-" class="0">
+<segment>
+<pinref part="J1" gate="G$1" pin="D-"/>
+<wire x1="22.86" y1="90.17" x2="27.94" y2="90.17" width="0.1524" layer="91"/>
+<label x="26.67" y="90.17" size="1.778" layer="95"/>
+</segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="9.RB11"/>
 <wire x1="19.05" y1="-15.24" x2="13.97" y2="-15.24" width="0.1524" layer="91"/>
@@ -19883,6 +19869,20 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <pinref part="U$1" gate="G$1" pin="41.RB5"/>
 <wire x1="49.53" y1="35.56" x2="49.53" y2="39.37" width="0.1524" layer="91"/>
 <label x="49.53" y="36.83" size="1.778" layer="95" rot="R90"/>
+</segment>
+</net>
+<net name="RC8" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="4.RC8"/>
+<wire x1="19.05" y1="10.16" x2="11.43" y2="10.16" width="0.1524" layer="91"/>
+<label x="11.43" y="10.16" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="RC9" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="5.RC9"/>
+<wire x1="19.05" y1="5.08" x2="11.43" y2="5.08" width="0.1524" layer="91"/>
+<label x="11.43" y="5.08" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
