@@ -19189,7 +19189,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <part name="+3V8" library="Honghe_Qi_ME433_HW2_Library" deviceset="+3V3" device=""/>
 <part name="U$6" library="Honghe_Qi_ME433_HW2_Library" deviceset="CONN_015" device=""/>
 <part name="U$7" library="Honghe_Qi_ME433_HW2_Library" deviceset="CONN_015" device=""/>
-<part name="+3V9" library="Honghe_Qi_ME433_HW2_Library" deviceset="+3V3" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -19380,9 +19379,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <instance part="U$7" gate="G$1" x="208.28" y="-31.75" smashed="yes">
 <attribute name="VALUE" x="205.74" y="-54.356" size="1.778" layer="96" font="vector"/>
 <attribute name="NAME" x="205.74" y="-10.922" size="1.778" layer="95" font="vector"/>
-</instance>
-<instance part="+3V9" gate="G$1" x="119.38" y="2.54" smashed="yes">
-<attribute name="VALUE" x="116.84" y="-2.54" size="1.778" layer="96" rot="R90"/>
 </instance>
 </instances>
 <busses>
@@ -19602,15 +19598,6 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <pinref part="+3V7" gate="G$1" pin="+3V3"/>
 <wire x1="229.87" y1="1.27" x2="229.87" y2="2.54" width="0.1524" layer="91"/>
 </segment>
-<segment>
-<pinref part="U$1" gate="G$1" pin="28.VDD"/>
-<pinref part="+3V9" gate="G$1" pin="+3V3"/>
-<wire x1="100.33" y1="0" x2="110.49" y2="0" width="0.1524" layer="91"/>
-<pinref part="C1" gate="G$1" pin="1"/>
-<wire x1="111.76" y1="0" x2="119.38" y2="0" width="0.1524" layer="91"/>
-<wire x1="110.49" y1="-1.27" x2="110.49" y2="0" width="0.1524" layer="91"/>
-<wire x1="110.49" y1="0" x2="111.76" y2="0" width="0.1524" layer="91"/>
-</segment>
 </net>
 <net name="N$2" class="0">
 <segment>
@@ -19656,6 +19643,14 @@ Source: http://products.nichicon.co.jp/en/pdf/XJA043/e-ud.pdf</description>
 <wire x1="19.05" y1="-5.08" x2="8.89" y2="-5.08" width="0.1524" layer="91"/>
 <pinref part="C6" gate="G$1" pin="+"/>
 <wire x1="8.89" y1="-5.08" x2="8.89" y2="-6.35" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$5" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="28.VDD"/>
+<wire x1="100.33" y1="0" x2="110.49" y2="0" width="0.1524" layer="91"/>
+<pinref part="C1" gate="G$1" pin="1"/>
+<wire x1="110.49" y1="0" x2="110.49" y2="-1.27" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="RB9" class="0">
