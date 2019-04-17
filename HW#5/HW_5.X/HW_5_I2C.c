@@ -152,6 +152,29 @@ int main() {
         i2c_master_send(0b00000000);
         i2c_master_stop(); // make the stop bit 
         
+        i2c_master_start(); //read GP7
+        setExpander(Write,GPIO); //set input/output
+        i2c_master_restart();//restart
+        i2c_master_send(Read);
+        r = i2c_master_recv(); 
+        i2c_master_ack(1); // make the ack so the slave knows we got it
+        i2c_master_stop(); // make the stop bit
+             
+       while(r==0b00000000)
+        {
+        i2c_master_start(); //write GP0 to 1 to turn on light
+        setExpander(Write,OLAT);
+        i2c_master_send(0b00000001);
+        i2c_master_stop(); // make the stop bit
+        
+        i2c_master_start(); //read GP7
+        setExpander(Write,GPIO); //set input/output
+        i2c_master_restart();//restart
+        i2c_master_send(Read);
+        r = i2c_master_recv(); 
+        i2c_master_ack(1); // make the ack so the slave knows we got it
+        i2c_master_stop(); // make the stop bit
+        } 
     }
         
 }
