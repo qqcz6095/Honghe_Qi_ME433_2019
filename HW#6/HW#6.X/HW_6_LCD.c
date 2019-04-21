@@ -1,6 +1,3 @@
-
-
-
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
 
@@ -320,8 +317,26 @@ int main() {
     DDPCONbits.JTAGEN = 0;
 
     // do your TRIS and LAT commands here
-  
+    TRISAbits.TRISA4 = 0; //A4 Output
+    TRISBbits.TRISB4 = 1; //B4 Input 
+    __builtin_enable_interrupts();
     
-    LCD_drawPixel(0,0,ILI9341_RED);
+   
+    while(1) {
+	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
+	// remember the core timer runs at half the sysclk
+        if (_CP0_GET_COUNT()>12000000)
+            {
+                LATAbits.LATA4 =!LATAbits.LATA4;
+                _CP0_SET_COUNT(0);
+        }
+            while (PORTBbits.RB4==0)
+        {
+            LATAbits.LATA4 =0;
+        }
+        } 
+    
+   
+    LCD_clearScreen(ILI9341_GREEN);
     
 }
