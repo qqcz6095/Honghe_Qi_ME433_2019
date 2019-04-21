@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=
+SOURCEFILES_QUOTED_IF_SPACED=HW_6_LCD.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=
-POSSIBLE_DEPFILES=
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/HW_6_LCD.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/HW_6_LCD.o.d
 
 # Object Files
-OBJECTFILES=
+OBJECTFILES=${OBJECTDIR}/HW_6_LCD.o
 
 # Source Files
-SOURCEFILES=
+SOURCEFILES=HW_6_LCD.c
 
 
 CFLAGS=
@@ -106,7 +106,19 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
+${OBJECTDIR}/HW_6_LCD.o: HW_6_LCD.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HW_6_LCD.o.d 
+	@${RM} ${OBJECTDIR}/HW_6_LCD.o 
+	@${FIXDEPS} "${OBJECTDIR}/HW_6_LCD.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG   -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/HW_6_LCD.o.d" -o ${OBJECTDIR}/HW_6_LCD.o HW_6_LCD.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
 else
+${OBJECTDIR}/HW_6_LCD.o: HW_6_LCD.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HW_6_LCD.o.d 
+	@${RM} ${OBJECTDIR}/HW_6_LCD.o 
+	@${FIXDEPS} "${OBJECTDIR}/HW_6_LCD.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/HW_6_LCD.o.d" -o ${OBJECTDIR}/HW_6_LCD.o HW_6_LCD.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
 endif
 
 # ------------------------------------------------------------------------------------
