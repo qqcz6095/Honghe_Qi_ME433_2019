@@ -1,5 +1,8 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
+#include "ili9341_PIC32.h"
+#include <stdio.h>
+//#include <ili9341.c>
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -36,7 +39,11 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
-#include "ili9341_PIC32.h"
+char letter[100];
+int k;
+double f;
+
+
 
 void LCD_init() {
     int time = 0;
@@ -299,7 +306,70 @@ void LCD_clearScreen(unsigned short color) {
     CS = 1; // CS
 }
 
+void LCD_letter(unsigned short x, unsigned short y, char letter, unsigned lettercolor, unsigned bgcolor){
+    char rowloc = letter - 0x20;
+    int no;
+    int column;
+    for (column=0; column <= 5;){
+        column++;
+        char pix = ASCII [rowloc][column];
+        for (no = 0;no <= 8;){
+            no++;
+            if (x+column <= ILI9341_TFTWIDTH && y+no<= ILI9341_TFTHEIGHT){
+                if (pix >> no & 1 == 1){
+                    LCD_drawPixel (x+column,y+no,lettercolor);
+                }
+                    else{
+                        LCD_drawPixel (x+column,y+no,bgcolor);
+                }
+            }
+        }
+    }
+}
 
+void LCD_get(unsigned short x, unsigned short y, char *letter, unsigned lettercolor, unsigned bgcolor){ 
+    int i = 0;
+    while(letter[i] != '\0'){
+        LCD_letter(x + i * 5,y,letter[i],lettercolor,bgcolor);
+        i++;
+    }
+}
+
+/*void LCD_bar(unsigned short x, unsigned short y, unsigned short l,unsigned h, unsigned short barcolor, unsigned short framecolor){
+    int i;
+    int j;
+    for (i=0;i<l;i++){  
+        for (j=0;j<h;j++){
+        LCD_drawPixel (x + i,y + j,barcolor);
+        }
+    }
+    if (l<100){
+    for(i = 0; i < 100; i ++){
+            for(j = 0; j<h ;j++){
+                LCD_drawPixel(x + i,y + j,framecolor);
+            }
+        }
+}
+} */
+void LCD_bar(unsigned short x, unsigned short y, unsigned short L, unsigned short H, unsigned short barcolor, unsigned short framecolor){
+    int i,j;
+    for(i = 0; i < L; ){
+        i++;
+        for(j = 0; j < H;){
+            j++;
+            LCD_drawPixel(x + i, y + j, barcolor);
+        }
+    }
+    if (L < 100){
+        for(i = L; i < 100;){
+            i++;
+            for(j = L; j< H;){
+                j++;
+                LCD_drawPixel(x + i,y + j,framecolor);
+            }
+        }
+    }
+}
 int main() {
 
     __builtin_disable_interrupts();
@@ -315,17 +385,23 @@ int main() {
 
     // disable JTAG to get pins back
     DDPCONbits.JTAGEN = 0;
-
+    
     // do your TRIS and LAT commands here
     TRISAbits.TRISA4 = 0; //A4 Output
     TRISBbits.TRISB4 = 1; //B4 Input 
     __builtin_enable_interrupts();
-    
    
+    
+    SPI1_init(); // initial SPI
+    LCD_init(); //Initial LCD
+    LCD_clearScreen( ILI9341_BLACK); //LCD background to black
+    
     while(1) {
+        
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
-        if (_CP0_GET_COUNT()>12000000)
+       
+       /* if (_CP0_GET_COUNT()>1200000)
             {
                 LATAbits.LATA4 =!LATAbits.LATA4;
                 _CP0_SET_COUNT(0);
@@ -333,10 +409,19 @@ int main() {
             while (PORTBbits.RB4==0)
         {
             LATAbits.LATA4 =0;
+        }*/
+        
+        for ( k = 0; k <= 100;  k++){
+            _CP0_SET_COUNT(0);
+        sprintf(letter,"Hello World !  % d !",k);
+        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
+        
+        LCD_bar(28, 80,k,4,ILI9341_DARKGREEN, ILI9341_WHITE);
+      
+       f= 24000000/_CP0_GET_COUNT();
+       sprintf(letter,"FPS %f",f);
+       LCD_get(28, 120,letter,ILI9341_DARKCYAN,ILI9341_WHITE);
+        
         }
-        } 
-    
-   
-    LCD_clearScreen(ILI9341_GREEN);
-    
+    } 
 }
