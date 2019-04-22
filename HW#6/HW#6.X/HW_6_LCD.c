@@ -310,20 +310,21 @@ void LCD_letter(unsigned short x, unsigned short y, char letter, unsigned letter
     char rowloc = letter - 0x20;
     int no;
     int column;
-    for (column=0; column <= 5;){
-        column++;
+    for (column=0; column <= 4;){
         char pix = ASCII [rowloc][column];
-        for (no = 0;no <= 8;){
-            no++;
+        for (no = 0;no <= 7;){
+            
             if (x+column <= ILI9341_TFTWIDTH && y+no<= ILI9341_TFTHEIGHT){
                 if (pix >> no & 1 == 1){
                     LCD_drawPixel (x+column,y+no,lettercolor);
                 }
                     else{
                         LCD_drawPixel (x+column,y+no,bgcolor);
-                }
+                }  
             }
+            no++;
         }
+        column++;
     }
 }
 
@@ -335,22 +336,6 @@ void LCD_get(unsigned short x, unsigned short y, char *letter, unsigned letterco
     }
 }
 
-/*void LCD_bar(unsigned short x, unsigned short y, unsigned short l,unsigned h, unsigned short barcolor, unsigned short framecolor){
-    int i;
-    int j;
-    for (i=0;i<l;i++){  
-        for (j=0;j<h;j++){
-        LCD_drawPixel (x + i,y + j,barcolor);
-        }
-    }
-    if (l<100){
-    for(i = 0; i < 100; i ++){
-            for(j = 0; j<h ;j++){
-                LCD_drawPixel(x + i,y + j,framecolor);
-            }
-        }
-}
-} */
 void LCD_bar(unsigned short x, unsigned short y, unsigned short L, unsigned short H, unsigned short barcolor, unsigned short framecolor){
     int i,j;
     for(i = 0; i < L; ){
@@ -411,17 +396,19 @@ int main() {
             LATAbits.LATA4 =0;
         }*/
         
-        for ( k = 0; k <= 100;  k++){
+        for ( k = 0; k < 100;  k++){
             _CP0_SET_COUNT(0);
-        sprintf(letter,"Hello World !  % d !",k);
+        sprintf(letter," Hello World !  % d ",k);
         LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
         
         LCD_bar(28, 80,k,4,ILI9341_DARKGREEN, ILI9341_WHITE);
       
-       f= 24000000/_CP0_GET_COUNT();
-       sprintf(letter,"FPS %f",f);
+       f= 24000000.0/_CP0_GET_COUNT();
+       sprintf(letter," FPS %.2f",f);
        LCD_get(28, 120,letter,ILI9341_DARKCYAN,ILI9341_WHITE);
+       while (_CP0_GET_COUNT()<=2400000){;}
         
         }
     } 
 }
+
