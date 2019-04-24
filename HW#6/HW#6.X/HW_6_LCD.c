@@ -376,7 +376,6 @@ int main() {
     TRISBbits.TRISB4 = 1; //B4 Input 
     __builtin_enable_interrupts();
    
-    
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
     LCD_clearScreen( ILI9341_BLACK); //LCD background to black

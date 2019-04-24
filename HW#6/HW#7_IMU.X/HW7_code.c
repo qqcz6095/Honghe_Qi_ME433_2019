@@ -42,17 +42,36 @@
 #define  Read   0b11010111 
 #define  Write  0b11010110
 #define  WHO 0x0F
+#define CTRL1_XL 0x10
+#define SetA 0b10000010
+#define CTRL2_G 0x11
+#define SetG 0b10001000
+#define CTRL3_C 0x12
+#define Set3C 00000100
+
+#define O_T_L 0x20
+#define O_T_H 0x21
+#define OX_L_G 0x22
+#define OX_H_G 0x23
+#define OY_L_G 0x24
+#define OY_H_G 0x25
+#define OZ_L_G 0x26
+#define OZ_H_G 0x27
+#define OX_L_XL 0x28
+#define OX_H_XL 0x29
+#define OY_L_XL 0x2A
+#define OY_H_XL 0x2B
+#define OZ_L_XL 0x2C
+#define OZ_H_XL 0x2D
 
 #define centerx 110
-#define centery 160
+#define centery 200
 #define framelength 100
 #define framewidth 6
 
 char letter[100];
 int k;
 double f;
-
-
 
 int main() {
 
@@ -80,7 +99,7 @@ int main() {
     i2c_master_setup(); //initial i2c
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
-     LCD_clearScreen(ILI9341_BLACK); //set background
+    LCD_clearScreen(ILI9341_BLACK); //set background
     while(1) {
         
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
@@ -95,8 +114,9 @@ int main() {
         {
             LATAbits.LATA4 =0;
         }
-     // WHO AM I
-       LCD_clearScreen(ILI9341_GREEN);
+       
+      //WHO AM I
+      // LCD_clearScreen(ILI9341_GREEN);
        i2c_master_start(); //read GP7
         i2c_master_send(Write);//WHO ArM I
         i2c_master_send(WHO);
@@ -107,26 +127,47 @@ int main() {
         r = i2c_master_recv(); 
         i2c_master_ack(1); // make the ack so the slave knows we got it
         i2c_master_stop(); // make the stop bit
-        */
-       
-         
+     
        sprintf(letter," WHO AM I %d ",r);
+       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);*/
+       
+        sprintf(letter," I L O V E   C A R ");
+        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
+        
+       // Accelerometer setup
+       i2c_master_start();
+       i2c_master_send(Write);
+       i2c_master_send(CTRL1_XL);
+       i2c_master_send(SetA);
+       i2c_master_stop;
+       
+       //Gryo setup
+       i2c_master_start();
+       i2c_master_send(Write);
+       i2c_master_send(CTRL2_G);
+       i2c_master_send(SetG);
+       i2c_master_stop;
+       
+       //Accelerometer Read
+       char AccelRead;
+       i2c_master_start();
+       i2c_master_send(Write);
+       i2c_master_send(CTRL1_XL);
+       i2c_master_stop();
+       i2c_master_restart();
+       i2c_master_send(Read);
+       AccelRead=i2c_master_recv();
+       i2c_master_ack(1);
+       i2c_master_stop();
+       
+       sprintf(letter," Acceleration  % d ",AccelRead);
        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
-     LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center
-       
-       
-     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth, 10,ILI9341_CYAN, ILI9341_WHITE); //right
-     //LCD_bar_right(centerx+framewidth, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
-       
+          
+     LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center    
+     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth, 10,ILI9341_CYAN, ILI9341_WHITE); //right 
      LCD_bar_left(centerx, centery,framelength,framewidth,10,ILI9341_CYAN, ILI9341_WHITE); //left
-    // LCD_bar_left(centerx, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
-       
      LCD_bar_up(centerx, centery, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //up
-     //LCD_bar_up(centerx, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
-       
      LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //down
-     //LCD_bar_down(centerx, centery+framewidth,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
-      
        }
        /* for ( k = 0; k < 100;  k++){
             _CP0_SET_COUNT(0);

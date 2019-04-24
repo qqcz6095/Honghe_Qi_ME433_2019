@@ -624,3 +624,6 @@ void LCD_bar_down(unsigned short x, unsigned short y, unsigned short L, unsigned
     }
    
 }
+
+void I2C_read_multiple(unsigned char address, unsigned char regis, unsigned char * data, int length){
+}
