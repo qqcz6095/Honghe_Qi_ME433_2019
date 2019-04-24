@@ -221,7 +221,7 @@ void i2c_master_stop(void);
 void initExpander();
 void setExpander(unsigned char pin, unsigned char level);
 char getExpander();
-unsigned char r;
+signed char r;
 //void setEx(unsigned char cmd,unsigned char reg);
 
 // I2C Master utilities, 100 kHz, using polling rather than interrupts

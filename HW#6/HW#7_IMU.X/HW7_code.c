@@ -67,20 +67,20 @@ int main() {
     // do your TRIS and LAT commands here
     TRISAbits.TRISA4 = 0; //A4 Output
     TRISBbits.TRISB4 = 1; //B4 Input 
+    ANSELBbits.ANSB2 = 0; //B2 Output
+    ANSELBbits.ANSB3 = 0; //B3 Output
     __builtin_enable_interrupts();
    
-    
+    i2c_master_setup(); //initial i2c
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
-    i2c_master_setup(); //initial i2c
-   
     
     while(1) {
         
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
        
-       if (_CP0_GET_COUNT()>1200000)
+      /* if (_CP0_GET_COUNT()>1200000)
             {
                 LATAbits.LATA4 =!LATAbits.LATA4;
                 _CP0_SET_COUNT(0);
@@ -89,26 +89,26 @@ int main() {
         {
             LATAbits.LATA4 =0;
         }
+     // WHO AM I
+       LCD_clearScreen(ILI9341_GREEN);
+       i2c_master_start(); //read GP7
+        i2c_master_send(Write);//WHO ArM I
+        i2c_master_send(WHO);
+        i2c_master_stop(); 
        
-        i2c_master_start(); //read GP7
-        setExpander(Write,WHO); //WHO AM I
-     
-        i2c_master_stop(); // make the stop bit
-        /*
-        i2c_master_start(); //read GP7
         i2c_master_restart();//restart
         i2c_master_send(Read);
         r = i2c_master_recv(); 
         i2c_master_ack(1); // make the ack so the slave knows we got it
         i2c_master_stop(); // make the stop bit
         */
-         LCD_clearScreen( ILI9341_RED); //LCD background to black
+       
          
-        //sprintf(letter," WHO I AM %.d ",r);
-        //LCD_get(28, 150,letter,ILI9341_RED,ILI9341_WHITE);
+       sprintf(letter," WHO AM I %d ",r);
+       LCD_get(28, 150,letter,ILI9341_RED,ILI9341_WHITE);
         
         
-        for ( k = 0; k < 100;  k++){
+       /* for ( k = 0; k < 100;  k++){
             _CP0_SET_COUNT(0);
         sprintf(letter," Hello World !  % d ",k);
         LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
@@ -120,7 +120,7 @@ int main() {
        LCD_get(28, 120,letter,ILI9341_DARKCYAN,ILI9341_WHITE);
        while (_CP0_GET_COUNT()<=2400000){;}
        
-        }
+        }*/
     } 
         
         
