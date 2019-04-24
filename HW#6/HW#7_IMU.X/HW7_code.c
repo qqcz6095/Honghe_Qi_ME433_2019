@@ -43,9 +43,15 @@
 #define  Write  0b11010110
 #define  WHO 0x0F
 
+#define centerx 110
+#define centery 160
+#define framelength 100
+#define framewidth 6
+
 char letter[100];
 int k;
 double f;
+
 
 
 int main() {
@@ -74,7 +80,7 @@ int main() {
     i2c_master_setup(); //initial i2c
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
-    
+     LCD_clearScreen(ILI9341_BLACK); //set background
     while(1) {
         
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
@@ -105,9 +111,23 @@ int main() {
        
          
        sprintf(letter," WHO AM I %d ",r);
-       LCD_get(28, 150,letter,ILI9341_RED,ILI9341_WHITE);
-        
-        
+       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
+     LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center
+       
+       
+     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth, 10,ILI9341_CYAN, ILI9341_WHITE); //right
+     //LCD_bar_right(centerx+framewidth, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
+       
+     LCD_bar_left(centerx, centery,framelength,framewidth,10,ILI9341_CYAN, ILI9341_WHITE); //left
+    // LCD_bar_left(centerx, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
+       
+     LCD_bar_up(centerx, centery, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //up
+     //LCD_bar_up(centerx, centery,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
+       
+     LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //down
+     //LCD_bar_down(centerx, centery+framewidth,10,framewidth, ILI9341_CYAN, ILI9341_GREEN);//bar 
+      
+       }
        /* for ( k = 0; k < 100;  k++){
             _CP0_SET_COUNT(0);
         sprintf(letter," Hello World !  % d ",k);
@@ -125,5 +145,5 @@ int main() {
         
         
        
-}
+
 

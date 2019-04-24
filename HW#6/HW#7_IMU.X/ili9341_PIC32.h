@@ -568,22 +568,59 @@ void LCD_get(unsigned short x, unsigned short y, char *letter, unsigned letterco
     }
 }
 
-void LCD_bar(unsigned short x, unsigned short y, unsigned short L, unsigned short H, unsigned short barcolor, unsigned short framecolor){
-    int i,j;
-    for(i = 0; i < L; ){
-        i++;
-        for(j = 0; j < H;){
-            j++;
-            LCD_drawPixel(x + i, y + j, barcolor);
-        }
-    }
-    if (L < 100){
-        for(i = L; i < 100;){
-            i++;
-            for(j = L; j< H;){
-                j++;
+void LCD_bar_right(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
+    int i,j,l,m;
+        for(i = 0; i < L;i++){
+             for(j = 0; j< H;j++){
                 LCD_drawPixel(x + i,y + j,framecolor);
-            }
+           }
+        }
+    for(l = 0; l < V; l++){
+        for(m = 0; m < H;m++){
+            LCD_drawPixel(x + l, y + m, barcolor);
         }
     }
+   
+}
+void LCD_bar_left(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
+    int i,j,l,m;
+        for(i = 0; i < L;i++){
+             for(j = 0; j< H;j++){
+                LCD_drawPixel(x - i,y + j,framecolor);
+           }
+        }
+    for(l = 0; l < V; l++){
+        for(m = 0; m < H;m++){
+            LCD_drawPixel(x - l, y + m, barcolor);
+        }
+    }
+   
+}
+void LCD_bar_up(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
+    int i,j,l,m;
+        for(j = 0; j < L;j++){
+             for(i = 0; i< H;i++){
+                LCD_drawPixel(x + i,y - j,framecolor);
+           }
+        }
+    for(m = 0; m < V; m++){
+        for(l = 0; l < H;l++){
+            LCD_drawPixel(x + l, y - m, barcolor);
+        }
+    }
+   
+}
+void LCD_bar_down(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
+    int i,j,l,m;
+        for(j = 0; j < L;j++){
+             for(i = 0; i< H;i++){
+               LCD_drawPixel(x + i,y + j,framecolor);
+           }
+        }
+    for(m = 0; m < V; m++){
+        for(l = 0; l < H;l++){
+            LCD_drawPixel(x + l, y + m, barcolor);
+        }
+    }
+   
 }
