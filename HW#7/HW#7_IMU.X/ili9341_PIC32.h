@@ -575,60 +575,49 @@ void LCD_bar_right(unsigned short x, unsigned short y, unsigned short L, unsigne
             LCD_drawPixel(x + l, y + m, barcolor);
         }
     }
-    for(i = l; i < L;i++){
-             for(j = m; j< H;j++){
-                LCD_drawPixel(x + i,y + j,framecolor);
+    for(i = 0; i < L-V;i++){
+             for(j = 0; j< H;j++){
+                LCD_drawPixel(x + V+i,y + j,framecolor);
            }
         } 
 }
 void LCD_bar_left(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
     int i,j,l,m;
-    
-    
-        for(i = 0; i < L;i++){
-             for(j = 0; j< H;j++){
-                LCD_drawPixel(x - i,y + j,framecolor);
-           }
-        }
-    for(l = 0; l < V; l++){
+        for(l = 0; l < V; l++){
         for(m = 0; m < H;m++){
             LCD_drawPixel(x - l, y + m, barcolor);
         }
     }
-   
+        for(i = 0; i < L-V;i++){
+             for(j = 0; j< H;j++){
+                LCD_drawPixel(x-V-i,y + j,framecolor);
+           }
+        }
 }
 void LCD_bar_up(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
     int i,j,l,m;
-    
-    
-        for(j = 0; j < L;j++){
-             for(i = 0; i< H;i++){
-                LCD_drawPixel(x + i,y - j,framecolor);
-           }
-        }
     for(m = 0; m < V; m++){
         for(l = 0; l < H;l++){
             LCD_drawPixel(x + l, y - m, barcolor);
         }
     }
-   
+        for(j = 0; j < L-V;j++){
+             for(i = 0; i< H;i++){
+                LCD_drawPixel(x+i,y - V-j,framecolor);
+           }
+        }
 }
 void LCD_bar_down(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
     int i,j,l,m;
-    
-    
-        for(j = 0; j < L;j++){
-             for(i = 0; i< H;i++){
-               LCD_drawPixel(x + i,y + j,framecolor);
-           }
-        }
-    for(m = 0; m < V; m++){
+     for(m = 0; m < V; m++){
         for(l = 0; l < H;l++){
             LCD_drawPixel(x + l, y + m, barcolor);
         }
     }
+        for(j = 0; j < L-V;j++){
+             for(i = 0; i< H;i++){
+               LCD_drawPixel(x + i,y + V+j,framecolor);
+           }
+        }
    
-}
-
-void I2C_read_multiple(unsigned char address, unsigned char regis, unsigned char * data, int length){
 }

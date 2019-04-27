@@ -70,8 +70,22 @@
 #define framewidth 6
 
 char letter[100];
-int k;
-double f;
+short ax_raw;
+float ax_real;
+short ay_raw;
+float ay_real;
+short az_raw;
+float az_real;
+float xl_r;
+float xl_l;
+float yl_u;
+float yl_d;
+short temp_raw;
+float temp_real;
+
+ unsigned char data[13];
+ unsigned char *index=data;
+ 
 
 int main() {
 
@@ -115,9 +129,8 @@ int main() {
             LATAbits.LATA4 =0;
         }
        
-      //WHO AM I
-      // LCD_clearScreen(ILI9341_GREEN);
-       i2c_master_start(); //read GP7
+        //WHO AM I
+        i2c_master_start(); 
         i2c_master_send(Write);//WHO ArM I
         i2c_master_send(WHO);
         i2c_master_stop(); 
@@ -130,9 +143,21 @@ int main() {
      
        sprintf(letter," WHO AM I %d ",r);
        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);*/
+      _CP0_SET_COUNT(0);  
+       //WHO AM I
+       i2c_master_start(); 
+       i2c_master_send(Write);//WHO ArM I
+       i2c_master_send(WHO);
+       i2c_master_stop(); 
        
-        sprintf(letter," I L O V E   C A R ");
-        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
+       i2c_master_restart();//restart
+       i2c_master_send(Read);
+       r = i2c_master_recv(); 
+       i2c_master_ack(1); // make the ack so the slave knows we got it
+       i2c_master_stop(); // make the stop bit
+     
+       sprintf(letter," WHO AM I %d ",r);
+       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
         
        // Accelerometer setup
        i2c_master_start();
@@ -148,27 +173,46 @@ int main() {
        i2c_master_send(SetG);
        i2c_master_stop;
        
-       //Accelerometer Read
-       char AccelRead;
-       i2c_master_start();
-       i2c_master_send(Write);
-       i2c_master_send(CTRL1_XL);
-       i2c_master_stop();
-       i2c_master_restart();
-       i2c_master_send(Read);
-       AccelRead=i2c_master_recv();
-       i2c_master_ack(1);
-       i2c_master_stop();
+       I2C_read_multiple(0,0x20,index,14);
+       //Accelerometer Read       
+       ax_raw=data[9]<<8|data[8];
+       ax_real=4*9.8/65536*ax_raw;
+       ay_raw=data[11]<<8|data[10];
+       ay_real=-4*9.8/65536*ay_raw;
+       az_raw=data[13]<<8|data[12];
+       az_real=4*9.8/65536*az_raw;
        
-       sprintf(letter," Acceleration  % d ",AccelRead);
-       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
-          
-     //LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center    
-     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth, 10,ILI9341_CYAN, ILI9341_WHITE); //right 
-     //LCD_bar_left(centerx, centery,framelength,framewidth,10,ILI9341_CYAN, ILI9341_WHITE); //left
-     //LCD_bar_up(centerx, centery, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //up
-     //LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,10, ILI9341_CYAN, ILI9341_WHITE); //down
+       temp_raw=data[1]<<8|data[0];
+       temp_real=temp_raw/65536*135.0;
+       
+       
+       sprintf(letter," A_X  % .02f ",ax_real);
+       LCD_get(28, 40,letter,ILI9341_RED,ILI9341_WHITE);
+       sprintf(letter," A_Y  % .02f ",ay_real);
+       LCD_get(28, 50,letter,ILI9341_RED,ILI9341_WHITE);
+       sprintf(letter," A_Z  % .02f ",az_real);
+       LCD_get(28, 60,letter,ILI9341_RED,ILI9341_WHITE);
+       if (ax_real>0){
+           xl_r=framelength/2*ax_real/9.8;
+           xl_l=0;
+       }else{
+           xl_l=-framelength/2*ax_real/9.8;
+           xl_r=0;    
        }
+       
+       if (ay_real>0){
+           yl_u=framelength/2*ay_real/9.8;
+           yl_d=0;
+       } else{
+           yl_d=-framelength/2*ay_real/9.8;
+           yl_u=0;
+           }
+     LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center    
+     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth,xl_r ,ILI9341_CYAN, ILI9341_WHITE); //right 
+     LCD_bar_left(centerx, centery,framelength,framewidth,xl_l,ILI9341_CYAN, ILI9341_WHITE); //left
+     LCD_bar_up(centerx, centery, framelength,framewidth,yl_u, ILI9341_CYAN, ILI9341_WHITE); //up
+     LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,yl_d, ILI9341_CYAN, ILI9341_WHITE); //down
+     while (_CP0_GET_COUNT()<=1200000){;}
        /* for ( k = 0; k < 100;  k++){
             _CP0_SET_COUNT(0);
         sprintf(letter," Hello World !  % d ",k);
@@ -182,9 +226,23 @@ int main() {
        while (_CP0_GET_COUNT()<=2400000){;}
        
         }*/
-    } 
-        
-        
-       
+    }
+}
 
-
+        
+void I2C_read_multiple(unsigned char initial_address, unsigned char initial_reg, unsigned char * index, int length){
+int i;
+for (i=initial_address;i<length;i++)
+{
+       i2c_master_start();
+       i2c_master_send(Write);
+       i2c_master_send(initial_reg+i);
+       i2c_master_stop();
+       i2c_master_restart();
+       i2c_master_send(Read);
+       *index=i2c_master_recv();
+       i2c_master_ack(1);
+       i2c_master_stop();
+       index++;  
+    }
+}
