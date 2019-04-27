@@ -2,7 +2,6 @@
 #include<sys/attribs.h>  // __ISR macro
 #include "ili9341_PIC32.h"
 #include <stdio.h>
-//#include <ili9341.c>
 
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
@@ -83,9 +82,8 @@ float yl_d;
 short temp_raw;
 float temp_real;
 
- unsigned char data[13];
- unsigned char *index=data;
- 
+unsigned char data[13];
+unsigned char *index=data;
 
 int main() {
 
@@ -114,35 +112,9 @@ int main() {
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
     LCD_clearScreen(ILI9341_BLACK); //set background
-    while(1) {
-        
+    while(1) {       
 	// use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 	// remember the core timer runs at half the sysclk
-       
-      /* if (_CP0_GET_COUNT()>1200000)
-            {
-                LATAbits.LATA4 =!LATAbits.LATA4;
-                _CP0_SET_COUNT(0);
-        }
-            while (PORTBbits.RB4==0)
-        {
-            LATAbits.LATA4 =0;
-        }
-       
-        //WHO AM I
-        i2c_master_start(); 
-        i2c_master_send(Write);//WHO ArM I
-        i2c_master_send(WHO);
-        i2c_master_stop(); 
-       
-        i2c_master_restart();//restart
-        i2c_master_send(Read);
-        r = i2c_master_recv(); 
-        i2c_master_ack(1); // make the ack so the slave knows we got it
-        i2c_master_stop(); // make the stop bit
-     
-       sprintf(letter," WHO AM I %d ",r);
-       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);*/
       _CP0_SET_COUNT(0);  
        //WHO AM I
        i2c_master_start(); 
@@ -156,6 +128,7 @@ int main() {
        i2c_master_ack(1); // make the ack so the slave knows we got it
        i2c_master_stop(); // make the stop bit
      
+       //Who am I display
        sprintf(letter," WHO AM I %d ",r);
        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
         
@@ -173,8 +146,8 @@ int main() {
        i2c_master_send(SetG);
        i2c_master_stop;
        
-       I2C_read_multiple(0,0x20,index,14);
-       //Accelerometer Read       
+       //Accelerometer Read 
+       I2C_read_multiple(0,0x20,index,14);      
        ax_raw=data[9]<<8|data[8];
        ax_real=4*9.8/65536*ax_raw;
        ay_raw=data[11]<<8|data[10];
@@ -183,15 +156,18 @@ int main() {
        az_real=4*9.8/65536*az_raw;
        
        temp_raw=data[1]<<8|data[0];
-       temp_real=temp_raw/65536*135.0;
+       temp_real=temp_raw/65536*125.00-40+25;
        
-       
+       //acceleration value display
        sprintf(letter," A_X  % .02f ",ax_real);
        LCD_get(28, 40,letter,ILI9341_RED,ILI9341_WHITE);
        sprintf(letter," A_Y  % .02f ",ay_real);
        LCD_get(28, 50,letter,ILI9341_RED,ILI9341_WHITE);
        sprintf(letter," A_Z  % .02f ",az_real);
        LCD_get(28, 60,letter,ILI9341_RED,ILI9341_WHITE);
+      // sprintf(letter," temp  % .02f ",temp_real);
+      //LCD_get(28, 70,letter,ILI9341_RED,ILI9341_WHITE);
+       //bar display
        if (ax_real>0){
            xl_r=framelength/2*ax_real/9.8;
            xl_l=0;
@@ -199,7 +175,6 @@ int main() {
            xl_l=-framelength/2*ax_real/9.8;
            xl_r=0;    
        }
-       
        if (ay_real>0){
            yl_u=framelength/2*ay_real/9.8;
            yl_d=0;
@@ -212,24 +187,13 @@ int main() {
      LCD_bar_left(centerx, centery,framelength,framewidth,xl_l,ILI9341_CYAN, ILI9341_WHITE); //left
      LCD_bar_up(centerx, centery, framelength,framewidth,yl_u, ILI9341_CYAN, ILI9341_WHITE); //up
      LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,yl_d, ILI9341_CYAN, ILI9341_WHITE); //down
-     while (_CP0_GET_COUNT()<=1200000){;}
-       /* for ( k = 0; k < 100;  k++){
-            _CP0_SET_COUNT(0);
-        sprintf(letter," Hello World !  % d ",k);
-        LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
-        
-        LCD_bar(28, 80,k,4,ILI9341_DARKGREEN, ILI9341_WHITE);
-      
-       f= 24000000.0/_CP0_GET_COUNT();
-       sprintf(letter," FPS %.2f",f);
-       LCD_get(28, 120,letter,ILI9341_DARKCYAN,ILI9341_WHITE);
-       while (_CP0_GET_COUNT()<=2400000){;}
-       
-        }*/
+     
+     //led flash
+     while (_CP0_GET_COUNT()<=1200000){;} //20hz update
+     LATAbits.LATA4 =!LATAbits.LATA4;      
     }
-}
+}       
 
-        
 void I2C_read_multiple(unsigned char initial_address, unsigned char initial_reg, unsigned char * index, int length){
 int i;
 for (i=initial_address;i<length;i++)
