@@ -95,7 +95,7 @@
       <Template dnOrder="1">
         <Name dnOrder="0">system_init.c</Name>
         <Path dnOrder="1">Source&amp;#160;Files/app/system_config/default</Path>
-        <Checksum dnOrder="2">A73A1CF45F59AAF3684626F964663839</Checksum>
+        <Checksum dnOrder="2">D1E46586B0F5866F3D2037EF1BF37E2B</Checksum>
       </Template>
       <Template dnOrder="2">
         <Name dnOrder="0">main.c</Name>
@@ -143,7 +143,7 @@
       <Template dnOrder="11">
         <Name dnOrder="0">system_config.h</Name>
         <Path dnOrder="1">Header&amp;#160;Files/app/system_config/default</Path>
-        <Checksum dnOrder="2">A01CB18C4E415FBB44B33C9263455737</Checksum>
+        <Checksum dnOrder="2">B77DC84A39FE3217C8C9DC8D4F19ED84</Checksum>
       </Template>
       <Template dnOrder="12">
         <Name dnOrder="0">app.h</Name>
@@ -162,11 +162,11 @@
     </Templates>
     <CompilerItems dnOrder="2">
       <C32 dnOrder="0">
-        <Include dnOrder="0" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#8\HW8_Harmony\firmware\src"/>
-        <Include dnOrder="1" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#8\HW8_Harmony\firmware\src\system_config\default"/>
-        <Include dnOrder="2" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#8\HW8_Harmony\firmware\src\default"/>
+        <Include dnOrder="0" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#9\HW9_Touch Screen\firmware\src"/>
+        <Include dnOrder="1" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#9\HW9_Touch Screen\firmware\src\system_config\default"/>
+        <Include dnOrder="2" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#9\HW9_Touch Screen\firmware\src\default"/>
         <Include dnOrder="3" value="C:\microchip\harmony\v2_06\framework"/>
-        <Include dnOrder="4" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#8\HW8_Harmony\firmware\src\system_config\default\framework"/>
+        <Include dnOrder="4" value="C:\Users\Honghe\Desktop\NU\ME433\Honghe_Qi_ME433_2019\HW#9\HW9_Touch Screen\firmware\src\system_config\default\framework"/>
       </C32>
     </CompilerItems>
     <Libraries dnOrder="3">
