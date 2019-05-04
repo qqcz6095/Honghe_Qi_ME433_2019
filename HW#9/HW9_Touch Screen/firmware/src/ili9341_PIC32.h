@@ -222,6 +222,17 @@ void initExpander();
 void setExpander(unsigned char pin, unsigned char level);
 char getExpander();
 signed char r;
+char x_temp;
+char y_temp;
+short y_read;
+int y_convert;
+short x_read;
+int x_convert;
+short z2_read;
+int z2_convert;
+short z1_read;
+int z1_convert;
+
 //void setEx(unsigned char cmd,unsigned char reg);
 
 // I2C Master utilities, 100 kHz, using polling rather than interrupts
@@ -626,3 +637,21 @@ void LCD_button_minus(unsigned short x, unsigned short y, unsigned short L, unsi
              }
       }// button sign left
     }
+void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z){
+spi_io(0b10010001);
+y_read=spi_io(0x00);
+y_convert=y_read<<9|0b000000000000;
+y[1]=spi_io(y_convert);
+spi_io(0b11010001);
+x_read=spi_io(0x00);
+x_convert=x_read<<9|0b000000000000;
+x[1]=spi_io(0x00);
+spi_io(0b11000001);
+z2_read=spi_io(0x00);
+z2_convert=z2_read<<9|0b000000000000;
+z[2]=spi_io(z2_convert);
+spi_io(0b10110001);
+z1_read=spi_io(0x00);
+z1_convert=z1_read<<9|0b000000000000;
+z[1]=spi_io(z1_convert)
+}

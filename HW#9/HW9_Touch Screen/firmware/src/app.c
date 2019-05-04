@@ -192,6 +192,7 @@ void APP_Initialize ( void )
     TRISBbits.TRISB4 = 1; //B4 Input 
     ANSELBbits.ANSB2 = 0; //B2 Output
     ANSELBbits.ANSB3 = 0; //B3 Output
+    TRISBbits.TRISB14 = 0;
     __builtin_enable_interrupts(); 
     
     i2c_master_setup(); //initial i2c
@@ -243,18 +244,20 @@ void APP_Tasks ( void )
                  _CP0_SET_COUNT(0);
   
 
-       
-       sprintf(letter,"X :"); //print x value
+       unsigned short x, y; int z; XPT2046_read(&x, &y, &z);
+       sprintf(letter,"X : %d",x); //print x value
        LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);   
-       sprintf(letter,"Y :"); //print y value
+       sprintf(letter,"Y : %d",y); //print y value
        LCD_get(30,55,letter,ILI9341_RED,ILI9341_WHITE);
-       sprintf(letter,"Z :"); // print z value
+       sprintf(letter,"Z : %d",z); // print z value
        LCD_get(30,70,letter,ILI9341_RED,ILI9341_WHITE);
        /*
         if (buttonx<x_value<(buttonx+L)&&buttony1<y_value<(buttony1+H){
         count=count+1;
          }
         */
+       
+       
        sprintf(letter,"C O U N T :%d",count);
        LCD_get(135, 45,letter,ILI9341_RED,ILI9341_WHITE); 
        
