@@ -314,7 +314,7 @@ void APP_Tasks ( void )
      LCD_bar_right(centerx+framewidth, centery, framelength,framewidth,xl_r ,ILI9341_CYAN, ILI9341_WHITE); //right 
      LCD_bar_left(centerx, centery,framelength,framewidth,xl_l,ILI9341_CYAN, ILI9341_WHITE); //left
      LCD_bar_up(centerx, centery, framelength,framewidth,yl_u, ILI9341_CYAN, ILI9341_WHITE); //up
-     LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,yl_d, ILI9341_CYAN, ILI9341_WHITE); //down
+     LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,yl_d, ILI9341_PINK, ILI9341_WHITE); //down
      
      //led flash
      while (_CP0_GET_COUNT()<=1200000){;} //20hz update

@@ -472,7 +472,7 @@ void SPI1_init() {
   
   SPI1CON = 0; // turn off the spi module and reset it
   SPI1BUF; // clear the rx buffer by reading from it
-  SPI1BRG = 0; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
+  SPI1BRG = 3; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
   SPI1STATbits.SPIROV = 0; // clear the overflow bit
   SPI1CONbits.CKE = 1; // data changes when clock goes from hi to lo (since CKP is 0)
   SPI1CONbits.MSTEN = 1; // master operation
@@ -489,7 +489,7 @@ unsigned char spi_io(unsigned char o) {
 
 void LCD_command(unsigned char com) {
     DC = 0; // DC
-    spi_io(com);
+        spi_io(com);
     DC = 1; // DC
 }
 
@@ -568,56 +568,61 @@ void LCD_get(unsigned short x, unsigned short y, char *letter, unsigned letterco
     }
 }
 
-void LCD_bar_right(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
-    int i,j,l,m;
-        for(l = 0; l < V; l++){
+void LCD_button_plus(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short BL,unsigned short BH, unsigned short buttonbg,unsigned short buttoncolor){
+    int i,j,l,m,n,o;
+        for(l = 0; l < L; l++){
         for(m = 0; m < H;m++){
-            LCD_drawPixel(x + l, y + m, barcolor);
-        }
+            LCD_drawPixel(x + l, y + m, buttonbg);
+            
+        } //button background
     }
-    for(i = 0; i < L-V;i++){
-             for(j = 0; j< H;j++){
-                LCD_drawPixel(x + V+i,y + j,framecolor);
-           }
-        } 
-}
-void LCD_bar_left(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
-    int i,j,l,m;
-        for(l = 0; l < V; l++){
+    for (n=0;n<BH;n++){
+        for(o=0;o<BH;o++){
+    LCD_drawPixel(x+(L-BH)/2+n,y+(H-BH)/2+o ,buttoncolor);
+        }
+    }// center pixel
+    for(i = 0; i < ((BL-BH)/2);i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L+BH)/2+i,y +(H-BH)/2+j,buttoncolor);
+             }
+        } //button sign right
+     for(i = 0; i < (BL-BH)/2;i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L-BH)/2-i,y +(H-BH)/2+j,buttoncolor);
+             }
+      }// button sign left
+     for(i = 0; i < (BL-BH)/2;i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L+BH)/2-j,y +(H-BH)/2-i,buttoncolor);
+             }
+      }// button sign up
+     for(i = 0; i < (BL-BH)/2;i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L-BH)/2+j,y +(H+BH)/2+i,buttoncolor);
+             }
+      }// button sign down*/
+    }
+void LCD_button_minus(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short BL,unsigned short BH, unsigned short buttonbg,unsigned short buttoncolor){
+    int i,j,l,m,n,o;
+        for(l = 0; l < L; l++){
         for(m = 0; m < H;m++){
-            LCD_drawPixel(x - l, y + m, barcolor);
-        }
+            LCD_drawPixel(x + l, y + m, buttonbg);
+            
+        } //button background
     }
-        for(i = 0; i < L-V;i++){
-             for(j = 0; j< H;j++){
-                LCD_drawPixel(x-V-i,y + j,framecolor);
-           }
+    for (n=0;n<BH;n++){
+        for(o=0;o<BH;o++){
+    LCD_drawPixel(x+(L-BH)/2+n,y+(H-BH)/2+o ,buttoncolor);
         }
-}
-void LCD_bar_up(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
-    int i,j,l,m;
-    for(m = 0; m < V; m++){
-        for(l = 0; l < H;l++){
-            LCD_drawPixel(x + l, y - m, barcolor);
-        }
+    }// center pixel
+    for(i = 0; i < ((BL-BH)/2);i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L+BH)/2+i,y +(H-BH)/2+j,buttoncolor);
+             }
+        } //button sign right
+     for(i = 0; i < (BL-BH)/2;i++){
+             for(j = 0; j< BH;j++){
+                LCD_drawPixel(x +(L-BH)/2-i,y +(H-BH)/2+j,buttoncolor);
+             }
+      }// button sign left
     }
-        for(j = 0; j < L-V;j++){
-             for(i = 0; i< H;i++){
-                LCD_drawPixel(x+i,y - V-j,framecolor);
-           }
-        }
-}
-void LCD_bar_down(unsigned short x, unsigned short y, unsigned short L, unsigned short H,unsigned short V, unsigned short barcolor, unsigned short framecolor){
-    int i,j,l,m;
-     for(m = 0; m < V; m++){
-        for(l = 0; l < H;l++){
-            LCD_drawPixel(x + l, y + m, barcolor);
-        }
-    }
-        for(j = 0; j < L-V;j++){
-             for(i = 0; i< H;i++){
-               LCD_drawPixel(x + i,y + V+j,framecolor);
-           }
-        }
-   
-}

@@ -54,7 +54,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 // *****************************************************************************
 
 #include "app.h"
-#include "ili9341_PIC32_Harmony.h"
+#include "ili9341_PIC32.h"
 #include <stdio.h>
 
 #define  Read   0b11010111 
@@ -82,27 +82,21 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #define OZ_L_XL 0x2C
 #define OZ_H_XL 0x2D
 
-#define centerx 110
-#define centery 200
-#define framelength 100
-#define framewidth 6
+#define buttonx 120
+#define buttony1 80
+#define buttony2 200
+#define L 80.9
+#define H 50
+#define BL 30
+#define BH 10
 
 char letter[100];
-short ax_raw;
-float ax_real;
-short ay_raw;
-float ay_real;
-short az_raw;
-float az_real;
-float xl_r;
-float xl_l;
-float yl_u;
-float yl_d;
-short temp_raw;
-float temp_real;
+int count;
+char x_value;
+char y_value;
+char z_value;
 
-unsigned char data[13];
-unsigned char *index=data;
+
 
 // *****************************************************************************
 // *****************************************************************************
@@ -204,6 +198,9 @@ void APP_Initialize ( void )
     SPI1_init(); // initial SPI
     LCD_init(); //Initial LCD
     LCD_clearScreen(ILI9341_BLACK); //set background
+    LCD_button_plus(buttonx,buttony1,L,H,BL,BH,ILI9341_GREEN, ILI9341_BLACK); // plus button
+    LCD_button_minus(buttonx,buttony2,L,H,BL,BH, ILI9341_RED,ILI9341_BLACK); //minus button
+    count=0;
     /* TODO: Initialize your application's state machine and other
      * parameters.
      */
@@ -237,85 +234,30 @@ void APP_Tasks ( void )
             }
             break;
         }
-    
+
  
         case APP_STATE_SERVICE_TASKS:
         {
-       
             
-                 _CP0_SET_COUNT(0);  
-       //WHO AM I
-       i2c_master_start(); 
-       i2c_master_send(Write);//WHO ArM I
-       i2c_master_send(WHO);
-       i2c_master_stop(); 
+            
+                 _CP0_SET_COUNT(0);
+  
+
        
-       i2c_master_restart();//restart
-       i2c_master_send(Read);
-       r = i2c_master_recv(); 
-       i2c_master_ack(1); // make the ack so the slave knows we got it
-       i2c_master_stop(); // make the stop bit
-     
-       //Who am I display
-       sprintf(letter," WHO AM I %d ",r);
-       LCD_get(28, 32,letter,ILI9341_RED,ILI9341_WHITE);
-        
-       // Accelerometer setup
-       i2c_master_start();
-       i2c_master_send(Write);
-       i2c_master_send(CTRL1_XL);
-       i2c_master_send(SetA);
-       i2c_master_stop;
+       sprintf(letter,"X :"); //print x value
+       LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);   
+       sprintf(letter,"Y :"); //print y value
+       LCD_get(30,55,letter,ILI9341_RED,ILI9341_WHITE);
+       sprintf(letter,"Z :"); // print z value
+       LCD_get(30,70,letter,ILI9341_RED,ILI9341_WHITE);
+       /*
+        if (buttonx<x_value<(buttonx+L)&&buttony1<y_value<(buttony1+H){
+        count=count+1;
+         }
+        */
+       sprintf(letter,"C O U N T :%d",count);
+       LCD_get(135, 45,letter,ILI9341_RED,ILI9341_WHITE); 
        
-       //Gryo setup
-       i2c_master_start();
-       i2c_master_send(Write);
-       i2c_master_send(CTRL2_G);
-       i2c_master_send(SetG);
-       i2c_master_stop;
-       
-       //Accelerometer Read 
-       I2C_read_multiple(0,0x20,index,14);      
-       ax_raw=data[9]<<8|data[8];
-       ax_real=4*9.8/65536*ax_raw;
-       ay_raw=data[11]<<8|data[10];
-       ay_real=-4*9.8/65536*ay_raw;
-       az_raw=data[13]<<8|data[12];
-       az_real=4*9.8/65536*az_raw;
-       
-       temp_raw=data[1]<<8|data[0];
-       temp_real=temp_raw/65536*125.00-40+25;
-       
-       //acceleration value display
-       sprintf(letter," A_X  % .02f ",ax_real);
-       LCD_get(28, 40,letter,ILI9341_RED,ILI9341_WHITE);
-       sprintf(letter," A_Y  % .02f ",ay_real);
-       LCD_get(28, 50,letter,ILI9341_RED,ILI9341_WHITE);
-       sprintf(letter," A_Z  % .02f ",az_real);
-       LCD_get(28, 60,letter,ILI9341_RED,ILI9341_WHITE);
-      // sprintf(letter," temp  % .02f ",temp_real);
-      //LCD_get(28, 70,letter,ILI9341_RED,ILI9341_WHITE);
-       //bar display
-       if (ax_real>0){
-           xl_r=framelength/2*ax_real/9.8;
-           xl_l=0;
-       }else{
-           xl_l=-framelength/2*ax_real/9.8;
-           xl_r=0;    
-       }
-       if (ay_real>0){
-           yl_u=framelength/2*ay_real/9.8;
-           yl_d=0;
-       } else{
-           yl_d=-framelength/2*ay_real/9.8;
-           yl_u=0;
-           }
-     LCD_bar_right(centerx, centery, framewidth,framewidth,framewidth, ILI9341_CYAN, ILI9341_WHITE); //center    
-     LCD_bar_right(centerx+framewidth, centery, framelength,framewidth,xl_r ,ILI9341_CYAN, ILI9341_WHITE); //right 
-     LCD_bar_left(centerx, centery,framelength,framewidth,xl_l,ILI9341_CYAN, ILI9341_WHITE); //left
-     LCD_bar_up(centerx, centery, framelength,framewidth,yl_u, ILI9341_CYAN, ILI9341_WHITE); //up
-     LCD_bar_down(centerx, centery+framewidth, framelength,framewidth,yl_d, ILI9341_CYAN, ILI9341_WHITE); //down
-     
      //led flash
      while (_CP0_GET_COUNT()<=1200000){;} //20hz update
      LATAbits.LATA4 =!LATAbits.LATA4;    

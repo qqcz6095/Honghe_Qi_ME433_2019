@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <project>                                  
-  <executable name="dist/default/production/HW8_Harmony.X.production.elf">                 
+  <executable name="dist/default/debug/HW9_Touch_Screen.X.debug.elf">                 
     <memory name="program">                 
       <units>bytes</units>                 
       <length>132240</length>                 
-      <used>25708</used>                     
-      <free>106532</free>                     
+      <used>5492</used>                     
+      <free>126748</free>                     
     </memory>                              
     <memory name="data">              
       <units>bytes</units>                 
-      <length>32768</length>                 
-      <used>260</used>                     
-      <free>32508</free>                     
+      <length>33280</length>                 
+      <used>1212</used>                     
+      <free>32068</free>                     
     </memory>                              
   </executable>                            
 </project>                                 
