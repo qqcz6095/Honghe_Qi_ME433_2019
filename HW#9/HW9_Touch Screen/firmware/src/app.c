@@ -95,6 +95,9 @@ int count;
 char x_value;
 char y_value;
 char z_value;
+double f;
+
+
 
 
 
@@ -192,7 +195,6 @@ void APP_Initialize ( void )
     TRISBbits.TRISB4 = 1; //B4 Input 
     ANSELBbits.ANSB2 = 0; //B2 Output
     ANSELBbits.ANSB3 = 0; //B3 Output
-    TRISBbits.TRISB14 = 0;
     __builtin_enable_interrupts(); 
     
     i2c_master_setup(); //initial i2c
@@ -243,26 +245,70 @@ void APP_Tasks ( void )
             
                  _CP0_SET_COUNT(0);
   
+                 CS_T=0;
+unsigned short x, y; int z1,z2; //XPT2046_read(&x, &y, &z1, &z2);
+int z_raw;
+unsigned short y_temp1;unsigned short y_temp2;
+spi_io(0b10010001);
 
-       unsigned short x, y; int z; XPT2046_read(&x, &y, &z);
-       sprintf(letter,"X : %d",x); //print x value
-       LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);   
-       sprintf(letter,"Y : %d",y); //print y value
+y_temp1=spi_io(0);
+y_temp2=spi_io(0);
+y=(y_temp1<<8|y_temp2)>>3;
+
+unsigned short x_temp1; unsigned short x_temp2;
+spi_io(0b11010001);
+x_temp1=spi_io(0);
+x_temp2=spi_io(0);
+x=(x_temp1<<8|x_temp2)>>3;
+
+
+ unsigned short z2_temp1; unsigned short  z2_temp2;
+spi_io(0b11000001);
+z2_temp1=spi_io(0);
+z2_temp2=spi_io(0);
+z2=(z2_temp1<<8|z2_temp2)>>3;
+
+unsigned short z1_temp1; unsigned short z1_temp2;
+spi_io(0b10110001);
+z1_temp1=spi_io(0);
+z1_temp2=spi_io(0);
+z1=(z1_temp1<<8|z1_temp2)>>3;
+z_raw=z1-z2+4095;
+
+unsigned short x_actual;
+unsigned short y_actual;
+x_actual=(x/16.25);
+y_actual=((1450-y)/1.84375);
+
+       CS_T=1;
+        sprintf(letter,"X Raw : %d   ",x); //print x value
+       LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);  
+       sprintf(letter,"Y Raw : %d   ",y); //print y value
        LCD_get(30,55,letter,ILI9341_RED,ILI9341_WHITE);
-       sprintf(letter,"Z : %d",z); // print z value
-       LCD_get(30,70,letter,ILI9341_RED,ILI9341_WHITE);
-       /*
-        if (buttonx<x_value<(buttonx+L)&&buttony1<y_value<(buttony1+H){
-        count=count+1;
-         }
-        */
+      sprintf(letter,"X : %d   ",x_actual); //print x value
+       LCD_get(30,70,letter,ILI9341_RED,ILI9341_WHITE);   
+       sprintf(letter,"Y : %d   ",y_actual); //print y value
+       LCD_get(30,85,letter,ILI9341_RED,ILI9341_WHITE);
+       sprintf(letter,"Z : %d   ",z_raw); // print z value
+       LCD_get(30,100,letter,ILI9341_RED,ILI9341_WHITE);
        
+       //&&buttony1<y_actual && y_actual<(buttony1+H)
+        if (z_raw>1000)
+          {  
+       if (buttonx<=x_actual && x_actual<=(buttonx+L)){
+        count=count+1;
+        }
+         }
+        
+       /* if (buttonx<=x_actual&& x_actual<=(buttonx+L) &&buttony2<y_actual && y_actual<=(buttony2+H)){
+        count=count-1;
+         }*/
        
        sprintf(letter,"C O U N T :%d",count);
        LCD_get(135, 45,letter,ILI9341_RED,ILI9341_WHITE); 
        
      //led flash
-     while (_CP0_GET_COUNT()<=1200000){;} //20hz update
+     while (_CP0_GET_COUNT()<=1200){;} //20hz update
      LATAbits.LATA4 =!LATAbits.LATA4;    
      
         }

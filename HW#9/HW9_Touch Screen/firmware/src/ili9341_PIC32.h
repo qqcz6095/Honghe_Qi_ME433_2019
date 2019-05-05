@@ -196,7 +196,7 @@ static const char ASCII[96][5] = {
 // spi pins
 #define CS LATBbits.LATB7
 #define DC LATBbits.LATB15
-
+#define CS_T LATBbits.LATB10
 // functions
 void LCD_init();
 void SPI1_init();
@@ -222,16 +222,19 @@ void initExpander();
 void setExpander(unsigned char pin, unsigned char level);
 char getExpander();
 signed char r;
-char x_temp;
-char y_temp;
-short y_read;
-int y_convert;
+
+unsigned short y_read;
+unsigned short y_convert;
+
+
 short x_read;
 int x_convert;
 short z2_read;
 int z2_convert;
 short z1_read;
 int z1_convert;
+short z1;
+short z2;
 
 //void setEx(unsigned char cmd,unsigned char reg);
 
@@ -483,7 +486,7 @@ void SPI1_init() {
   
   SPI1CON = 0; // turn off the spi module and reset it
   SPI1BUF; // clear the rx buffer by reading from it
-  SPI1BRG = 3; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
+  SPI1BRG = 2.5; // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
   SPI1STATbits.SPIROV = 0; // clear the overflow bit
   SPI1CONbits.CKE = 1; // data changes when clock goes from hi to lo (since CKP is 0)
   SPI1CONbits.MSTEN = 1; // master operation
@@ -637,21 +640,32 @@ void LCD_button_minus(unsigned short x, unsigned short y, unsigned short L, unsi
              }
       }// button sign left
     }
-void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z){
+/*
+void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z1,unsigned int *z2){
+unsigned short y_temp1;unsigned short y_temp2;
 spi_io(0b10010001);
-y_read=spi_io(0x00);
-y_convert=y_read<<9|0b000000000000;
-y[1]=spi_io(y_convert);
+
+y_temp1=spi_io(0);
+y_temp2=spi_io(0);
+y[1]=(y_temp1<<8|y_temp2)>>3;
+
+unsigned short x_temp1; unsigned short x_temp2;
 spi_io(0b11010001);
-x_read=spi_io(0x00);
-x_convert=x_read<<9|0b000000000000;
-x[1]=spi_io(0x00);
+x_temp1=spi_io(0);
+x_temp2=spi_io(0);
+x[1]=(x_temp1<<8|x_temp2)>>3;
+
+
+ unsigned short z2_temp1; unsigned short  z2_temp2;
 spi_io(0b11000001);
-z2_read=spi_io(0x00);
-z2_convert=z2_read<<9|0b000000000000;
-z[2]=spi_io(z2_convert);
+z2_temp1=spi_io(0);
+z2_temp2=spi_io(0);
+z2[1]=(z2_temp1<<8|z2_temp2)>>3;
+
+unsigned short z1_temp1; unsigned short z1_temp2;
 spi_io(0b10110001);
-z1_read=spi_io(0x00);
-z1_convert=z1_read<<9|0b000000000000;
-z[1]=spi_io(z1_convert)
+z1_temp1=spi_io(0);
+z1_temp2=spi_io(0);
+z1[1]=(z1_temp1<<8|z1_temp2)>>3;
 }
+*/
