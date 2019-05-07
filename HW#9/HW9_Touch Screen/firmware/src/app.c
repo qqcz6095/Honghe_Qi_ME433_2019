@@ -57,31 +57,6 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "ili9341_PIC32.h"
 #include <stdio.h>
 
-#define  Read   0b11010111 
-#define  Write  0b11010110
-#define  WHO 0x0F
-#define CTRL1_XL 0x10
-#define SetA 0b10000010
-#define CTRL2_G 0x11
-#define SetG 0b10001000
-#define CTRL3_C 0x12
-#define Set3C 00000100
-
-#define O_T_L 0x20
-#define O_T_H 0x21
-#define OX_L_G 0x22
-#define OX_H_G 0x23
-#define OY_L_G 0x24
-#define OY_H_G 0x25
-#define OZ_L_G 0x26
-#define OZ_H_G 0x27
-#define OX_L_XL 0x28
-#define OX_H_XL 0x29
-#define OY_L_XL 0x2A
-#define OY_H_XL 0x2B
-#define OZ_L_XL 0x2C
-#define OZ_H_XL 0x2D
-
 #define buttonx 120
 #define buttony1 80
 #define buttony2 200
@@ -95,10 +70,6 @@ int count;
 char x_value;
 char y_value;
 char z_value;
-double f;
-
-
-
 
 
 // *****************************************************************************
@@ -157,22 +128,6 @@ APP_DATA appData;
   Remarks:
     See prototype in app.h.
  */
-void I2C_read_multiple(unsigned char initial_address, unsigned char initial_reg, unsigned char * index, int length){
-int i;
-for (i=initial_address;i<length;i++)
-{
-       i2c_master_start();
-       i2c_master_send(Write);
-       i2c_master_send(initial_reg+i);
-       i2c_master_stop();
-       i2c_master_restart();
-       i2c_master_send(Read);
-       *index=i2c_master_recv();
-       i2c_master_ack(1);
-       i2c_master_stop();
-       index++;  
-    }
-}
 void APP_Initialize ( void )
 {
     /* Place the App state machine in its initial state. */
@@ -246,54 +201,52 @@ void APP_Tasks ( void )
                  _CP0_SET_COUNT(0);
   
                  CS_T=0;
+              
 //unsigned short x, y; int z1,z2; //XPT2046_read(&x, &y, &z1, &z2);
 int z_raw;
-unsigned char x_temp[1];
-unsigned char y_temp[1];
-unsigned char z1_temp[1];
-unsigned char z2_temp[1];
-unsigned char *x=x_temp;
-unsigned char *y=y_temp;
-unsigned char *z1=z1_temp;
-unsigned char *z2=z2_temp;
-LATAbits.LATA4 =!LATAbits.LATA4;
-XPT2046_read(&x, &y, &z1, &z2);
-z_raw=z1[1]-z2_temp[1]+4095;
+unsigned short x;
+unsigned short y;
+unsigned short t;
+int z1;
+int z2;
+
+XPT2046_read(&x, &y, &z1, &z2,&t);
+z_raw=z1-z2+4095;
 
 unsigned short x_actual;
 unsigned short y_actual;
-x_actual=(x[1]/16.25);
-y_actual=((1450-y[1])/1.84375);
+x_actual=((x-245)/15.125);
+y_actual=((3900-y)/11.15);
 
        CS_T=1;
-        sprintf(letter,"X Raw : %d   ",x[1]); //print x value
+        sprintf(letter,"X Raw : %d      ",x); //print x value
        LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);  
-       sprintf(letter,"Y Raw : %d   ",y[1]); //print y value
+       sprintf(letter,"Y Raw : %d      ",y); //print y value
        LCD_get(30,55,letter,ILI9341_RED,ILI9341_WHITE);
-      sprintf(letter,"X : %d   ",x_actual); //print x value
+      sprintf(letter,"X : %d      ",x_actual); //print x value
        LCD_get(30,70,letter,ILI9341_RED,ILI9341_WHITE);   
-       sprintf(letter,"Y : %d   ",y_actual); //print y value
+       sprintf(letter,"Y : %d     ",y_actual); //print y value
        LCD_get(30,85,letter,ILI9341_RED,ILI9341_WHITE);
        sprintf(letter,"Z : %d   ",z_raw); // print z value
        LCD_get(30,100,letter,ILI9341_RED,ILI9341_WHITE);
-       
+
        //&&buttony1<y_actual && y_actual<(buttony1+H)
-        if (z_raw>1000)
-          {  
-       if (buttonx<=x_actual && x_actual<=(buttonx+L)){
+       if (z_raw>800)
+         { 
+       if(buttonx<=x_actual && x_actual<=(buttonx+L) && buttony1<y_actual && y_actual<(buttony1+H)){
         count=count+1;
         }
-         }
-        
-       /* if (buttonx<=x_actual&& x_actual<=(buttonx+L) &&buttony2<y_actual && y_actual<=(buttony2+H)){
+       }
+       if (z_raw>800){
+        if(buttonx<=x_actual && x_actual<=(buttonx+L) && buttony2<y_actual && y_actual<(buttony2+H)){
         count=count-1;
-         }*/
-       
+        }
+         }
        sprintf(letter,"C O U N T :%d",count);
        LCD_get(135, 45,letter,ILI9341_RED,ILI9341_WHITE); 
        
      //led flash
-     while (_CP0_GET_COUNT()<=1200){;} //20hz update
+      //20hz update
          
      
         }
@@ -302,7 +255,6 @@ y_actual=((1450-y[1])/1.84375);
 
         /* TODO: implement your application state machine.*/
         
-
 
 }
 

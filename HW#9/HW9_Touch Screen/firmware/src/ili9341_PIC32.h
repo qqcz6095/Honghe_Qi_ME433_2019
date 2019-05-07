@@ -641,10 +641,16 @@ void LCD_button_minus(unsigned short x, unsigned short y, unsigned short L, unsi
       }// button sign left
     }
 
-void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z1,unsigned int *z2){
+void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z1,unsigned int *z2, unsigned short *t){
+ //this is trash command.   
+unsigned short t_temp1;unsigned short t_temp2;   
+spi_io(0b11010001);
+t_temp1=spi_io(0);
+t_temp2=spi_io(0);
+*t=(t_temp1<<8|t_temp2)>>3;
+
 unsigned short y_temp1;unsigned short y_temp2;
 spi_io(0b10010001);
-
 y_temp1=spi_io(0);
 y_temp2=spi_io(0);
 *y=(y_temp1<<8|y_temp2)>>3;
@@ -654,7 +660,6 @@ spi_io(0b11010001);
 x_temp1=spi_io(0);
 x_temp2=spi_io(0);
 *x=(x_temp1<<8|x_temp2)>>3;
-
 
  unsigned short z2_temp1; unsigned short  z2_temp2;
 spi_io(0b11000001);
