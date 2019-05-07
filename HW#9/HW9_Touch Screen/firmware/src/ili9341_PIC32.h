@@ -640,32 +640,31 @@ void LCD_button_minus(unsigned short x, unsigned short y, unsigned short L, unsi
              }
       }// button sign left
     }
-/*
+
 void XPT2046_read(unsigned short *x, unsigned short *y, unsigned int *z1,unsigned int *z2){
 unsigned short y_temp1;unsigned short y_temp2;
 spi_io(0b10010001);
 
 y_temp1=spi_io(0);
 y_temp2=spi_io(0);
-y[1]=(y_temp1<<8|y_temp2)>>3;
+*y=(y_temp1<<8|y_temp2)>>3;
 
 unsigned short x_temp1; unsigned short x_temp2;
 spi_io(0b11010001);
 x_temp1=spi_io(0);
 x_temp2=spi_io(0);
-x[1]=(x_temp1<<8|x_temp2)>>3;
+*x=(x_temp1<<8|x_temp2)>>3;
 
 
  unsigned short z2_temp1; unsigned short  z2_temp2;
 spi_io(0b11000001);
 z2_temp1=spi_io(0);
 z2_temp2=spi_io(0);
-z2[1]=(z2_temp1<<8|z2_temp2)>>3;
+*z2=(z2_temp1<<8|z2_temp2)>>3;
 
 unsigned short z1_temp1; unsigned short z1_temp2;
 spi_io(0b10110001);
 z1_temp1=spi_io(0);
 z1_temp2=spi_io(0);
-z1[1]=(z1_temp1<<8|z1_temp2)>>3;
+*z1=(z1_temp1<<8|z1_temp2)>>3;
 }
-*/
