@@ -648,7 +648,7 @@ spi_io(0b11010001);
 t_temp1=spi_io(0);
 t_temp2=spi_io(0);
 *t=(t_temp1<<8|t_temp2)>>3;
-
+// end of trash command. I do not know why I have to have this trash command, otherwise the reading sticks to 510.... Nick does not know why either. :(
 unsigned short y_temp1;unsigned short y_temp2;
 spi_io(0b10010001);
 y_temp1=spi_io(0);

@@ -202,7 +202,6 @@ void APP_Tasks ( void )
   
                  CS_T=0;
               
-//unsigned short x, y; int z1,z2; //XPT2046_read(&x, &y, &z1, &z2);
 int z_raw;
 unsigned short x;
 unsigned short y;
@@ -218,6 +217,7 @@ unsigned short y_actual;
 x_actual=((x-245)/15.125);
 y_actual=((3900-y)/11.15);
 
+//print value to lcd
        CS_T=1;
         sprintf(letter,"X Raw : %d      ",x); //print x value
        LCD_get(30,40,letter,ILI9341_RED,ILI9341_WHITE);  
@@ -229,14 +229,15 @@ y_actual=((3900-y)/11.15);
        LCD_get(30,85,letter,ILI9341_RED,ILI9341_WHITE);
        sprintf(letter,"Z : %d   ",z_raw); // print z value
        LCD_get(30,100,letter,ILI9341_RED,ILI9341_WHITE);
-
-       //&&buttony1<y_actual && y_actual<(buttony1+H)
+// if in + button , count +1
        if (z_raw>800)
          { 
        if(buttonx<=x_actual && x_actual<=(buttonx+L) && buttony1<y_actual && y_actual<(buttony1+H)){
         count=count+1;
         }
        }
+       
+// if in - button, count -1
        if (z_raw>800){
         if(buttonx<=x_actual && x_actual<=(buttonx+L) && buttony2<y_actual && y_actual<(buttony2+H)){
         count=count-1;
@@ -244,18 +245,11 @@ y_actual=((3900-y)/11.15);
          }
        sprintf(letter,"C O U N T :%d",count);
        LCD_get(135, 45,letter,ILI9341_RED,ILI9341_WHITE); 
-       
-     //led flash
-      //20hz update
-         
-     
         }
             break;
         }
-
         /* TODO: implement your application state machine.*/
-        
-
+       
 }
 
 
