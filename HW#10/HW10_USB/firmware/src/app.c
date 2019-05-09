@@ -457,7 +457,6 @@ void APP_Tasks(void) {
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
                  if (!strcmp(appData.readBuffer,"r")){
-                    // We received an r, time to set sendDataFlag and set counter to zero
                     flag = 1;
                     i = 1;     
                }
