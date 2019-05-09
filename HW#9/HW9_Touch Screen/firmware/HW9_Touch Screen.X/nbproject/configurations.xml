@@ -317,6 +317,9 @@
         <property key="programoptions.uselvpprogramming" value="false"/>
         <property key="voltagevalue" value="3.25"/>
       </PICkit3PlatformTool>
+      <snap>
+        <property key="memories.programmemory.ranges" value="1d000000-1d01ffff"/>
+      </snap>
     </conf>
   </confs>
 </configurationDescriptor>

@@ -456,7 +456,7 @@ void APP_Tasks(void) {
                 USB_DEVICE_CDC_Read(USB_DEVICE_CDC_INDEX_0,
                         &appData.readTransferHandle, appData.readBuffer,
                         APP_READ_BUFFER_SIZE);
-                 if (appData.readBuffer,"r"){
+                 if (!strcmp(appData.readBuffer,"r")){
                     // We received an r, time to set sendDataFlag and set counter to zero
                     flag = 1;
                     i = 1;     
