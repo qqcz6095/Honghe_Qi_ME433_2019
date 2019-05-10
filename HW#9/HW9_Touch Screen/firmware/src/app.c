@@ -57,6 +57,7 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include "ili9341_PIC32.h"
 #include <stdio.h>
 
+#define CS_T LATBbits.LATB10
 #define buttonx 120
 #define buttony1 80
 #define buttony2 200
@@ -150,6 +151,7 @@ void APP_Initialize ( void )
     TRISBbits.TRISB4 = 1; //B4 Input 
     ANSELBbits.ANSB2 = 0; //B2 Output
     ANSELBbits.ANSB3 = 0; //B3 Output
+    
     __builtin_enable_interrupts(); 
     
     i2c_master_setup(); //initial i2c

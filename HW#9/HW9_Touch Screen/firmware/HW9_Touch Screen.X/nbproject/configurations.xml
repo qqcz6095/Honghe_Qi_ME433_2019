@@ -108,6 +108,7 @@
           </logicalFolder>
         </logicalFolder>
       </logicalFolder>
+      <itemPath>../src/ili9341_PIC32.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
