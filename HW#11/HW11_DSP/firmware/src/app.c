@@ -51,6 +51,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 #include <xc.h>
 #include "imu.h"
 
+#define MAX_NUM_DATA_ARRAY 20
+#define MAX_NUM_MAF_ARRAY 4
+
 // *****************************************************************************
 // *****************************************************************************
 // Section: Global Data Definitions
@@ -64,18 +67,20 @@ int i = 1;
 int flag;
 int startTime = 0; // to remember the loop time
 
-short ax_raw;
-float ax_real;
-short gx_raw;
-float gx_real;
-short ay_raw;
-float ay_real;
-short gy_raw;
-float gy_real;
+int data_index = 0;
+int i_MAF = 1;
+float dataArray[MAX_NUM_DATA_ARRAY]={0}; // zero array..
+
+float buffer_MAF [4]={0};
+float az_MAF=0;
+float az_FIR=0;
+float az_IIR=0;
+float IIR_A=0.2;
+float IIR_B=0.8;
+int i_data=1;
+
 short az_raw;
 float az_real;
-short gz_raw;
-float gz_real;
 
 unsigned char data[13];
 unsigned char *index=data;
@@ -480,28 +485,58 @@ void APP_Tasks(void) {
             appData.isWriteComplete = false;
             appData.state = APP_STATE_WAIT_FOR_WRITE_COMPLETE;
        
-       //Accelerometer Read 
+       //Accelerometer Read in Z only
        I2C_read_multiple(0,0x20,index,14);      
-       ax_raw=data[9]<<8|data[8];
-       ax_real=4*9.81/65536*ax_raw;
-       ay_raw=data[11]<<8|data[10];
-       ay_real=-4*9.81/65536*ay_raw;
        az_raw=data[13]<<8|data[12];
        az_real=4*9.81/65536*az_raw;
-       //Gyro Read
-       gx_raw=data[3]<<8|data[2];
-       gx_real=gx_raw*1000*2/65536;
-       gy_raw=data[5]<<8|data[4];
-       gy_real=gy_raw*1000*2/65536;
-       gz_raw=data[7]<<8|data[6];
-       gz_real=gz_raw*1000*2/65536;     
+         //MAF 
+       
+            
+       
+            //if(data_index>MAX_NUM_DATA_ARRAY){ // if greater, roll over.
+              //  data_index = 0;
+            //}
+           // dataArray[data_index] = az_real;
+            
+            
+            
+            
+           if(i_MAF> 4){
+                i_MAF = 1;
+            }
+            buffer_MAF[i_MAF] = az_real;
+           
+            for (i_data=0;i_data<4;i_data++){
+                az_MAF = az_MAF + buffer_MAF[i_data];
+            }
+            az_MAF = az_MAF/4.0;
+       //buffer[i_data]=az_real;
+       
+     //int i_MAF;
+      //if (i_data>=4){ 
+         
+      // for (i_MAF=1;i_MAF<=4;i_MAF++){
+      // az_MAF=az_MAF+buffer[i_MAF];
+      // }
+     //} 
+     
+    //  az_MAF=(buffer[1]+buffer[2]+buffer[3]+buffer[4])*0.25;
+      
+       
+       //FIR
+            
+       //IIR
+            az_IIR=az_IIR*IIR_A+az_real*IIR_B;
+    
+      
+  
             /* PUT THE TEXT YOU WANT TO SEND TO THE COMPUTER IN dataOut
             AND REMEMBER THE NUMBER OF CHARACTERS IN len */
             /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
             //if (appData.isReadComplete) {
        if (appData.isReadComplete) {;}
             if (flag == 1 && i<=100){
-            len = sprintf(dataOut, "%d %0.02f %0.02f %0.02f %0.02f %0.02f %0.02f\r\n", i,ax_real,ay_real,az_real,gx_real,gy_real,gz_real);
+               len = sprintf(dataOut, "%d %0.02f %0.02f  \r\n",i,az_MAF,az_IIR);
             i++; // increment the index so we see a change in the text
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
             
@@ -520,8 +555,10 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
             }
+      data_index++;
+            i_MAF++;
             break;
-       
+        
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:
 
             if (APP_StateReset()) {
@@ -542,6 +579,7 @@ void APP_Tasks(void) {
         default:
             break;
     }
+    
 }
 
 
