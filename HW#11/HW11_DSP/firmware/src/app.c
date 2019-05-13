@@ -69,11 +69,14 @@ int startTime = 0; // to remember the loop time
 
 int data_index = 0;
 int i_MAF = 1;
+int i_FIR=1;
 float dataArray[MAX_NUM_DATA_ARRAY]={0}; // zero array..
 
 float buffer_MAF [4]={0};
-float az_MAF=0;
-float az_FIR=0;
+float FIR_ratio [6]={0.0102,    0.1177,    0.3721,    0.3721,    0.1177,    0.0102};
+float buffer_FIR[6]={0};
+float az_MAF;
+float az_FIR;
 float az_IIR=0;
 float IIR_A=0.2;
 float IIR_B=0.8;
@@ -490,41 +493,22 @@ void APP_Tasks(void) {
        az_raw=data[13]<<8|data[12];
        az_real=4*9.81/65536*az_raw;
          //MAF 
-       
-            
-       
-            //if(data_index>MAX_NUM_DATA_ARRAY){ // if greater, roll over.
-              //  data_index = 0;
-            //}
-           // dataArray[data_index] = az_real;
-            
-            
-            
-            
            if(i_MAF> 4){
                 i_MAF = 1;
             }
             buffer_MAF[i_MAF] = az_real;
-           
+            az_MAF=0;
             for (i_data=0;i_data<4;i_data++){
                 az_MAF = az_MAF + buffer_MAF[i_data];
             }
-            az_MAF = az_MAF/4.0;
-       //buffer[i_data]=az_real;
-       
-     //int i_MAF;
-      //if (i_data>=4){ 
-         
-      // for (i_MAF=1;i_MAF<=4;i_MAF++){
-      // az_MAF=az_MAF+buffer[i_MAF];
-      // }
-     //} 
-     
-    //  az_MAF=(buffer[1]+buffer[2]+buffer[3]+buffer[4])*0.25;
-      
-       
+            az_MAF = az_MAF/4;
        //FIR
-            
+            az_FIR=0;
+            for(i_FIR=1;i_FIR<7;i_FIR++){
+               buffer_FIR[i_FIR] = az_real;
+               az_FIR = az_FIR+FIR_ratio[i_FIR]*buffer_FIR[i_FIR];
+            }
+                    
        //IIR
             az_IIR=az_IIR*IIR_A+az_real*IIR_B;
     
@@ -536,7 +520,7 @@ void APP_Tasks(void) {
             //if (appData.isReadComplete) {
        if (appData.isReadComplete) {;}
             if (flag == 1 && i<=100){
-               len = sprintf(dataOut, "%d %0.02f %0.02f  \r\n",i,az_MAF,az_IIR);
+               len = sprintf(dataOut, "%d %0.02f %0.02f %0.02f  \r\n",i,az_MAF,az_FIR,az_IIR);
             i++; // increment the index so we see a change in the text
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
             
@@ -555,8 +539,9 @@ void APP_Tasks(void) {
                         USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE);
                 startTime = _CP0_GET_COUNT(); // reset the timer for acurate delays
             }
-      data_index++;
+      //data_index++;
             i_MAF++;
+          
             break;
         
         case APP_STATE_WAIT_FOR_WRITE_COMPLETE:
