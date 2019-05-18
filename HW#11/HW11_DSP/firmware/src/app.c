@@ -73,7 +73,7 @@ int i_FIR=1;
 float dataArray[MAX_NUM_DATA_ARRAY]={0}; // zero array..
 
 float buffer_MAF [4]={0};
-float FIR_ratio [6]={0.0102,    0.1177,    0.3721,    0.3721,    0.1177,    0.0102};
+float FIR_ratio [6]={0.0152,0.1260,0.3588,0.3588,0.1260,0.0152};
 float buffer_FIR[6]={0};
 float az_MAF;
 float az_FIR;
@@ -519,8 +519,8 @@ void APP_Tasks(void) {
             /* THIS IS WHERE YOU CAN READ YOUR IMU, PRINT TO THE LCD, ETC */
             //if (appData.isReadComplete) {
        if (appData.isReadComplete) {;}
-            if (flag == 1 && i<=100){
-               len = sprintf(dataOut, "%d %0.02f %0.02f %0.02f  \r\n",i,az_MAF,az_FIR,az_IIR);
+            if (flag == 1 && i<=1500){
+               len = sprintf(dataOut, "%d   %0.02f   %0.02f   %0.02f   %0.02f   \r\n",i,  az_real,  az_MAF,  az_FIR,  az_IIR);
             i++; // increment the index so we see a change in the text
             /* IF A LETTER WAS RECEIVED, ECHO IT BACK SO THE USER CAN SEE IT */
             
