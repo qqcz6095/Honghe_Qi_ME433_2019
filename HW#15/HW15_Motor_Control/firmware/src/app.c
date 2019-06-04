@@ -140,10 +140,8 @@ void APP_Initialize ( void )
     DDPCONbits.JTAGEN = 0;
     
     // do your TRIS and LAT commands here
-    TRISAbits.TRISA4 = 0; //A4 Output
-    TRISBbits.TRISB4 = 1; //B4 Input 
-    ANSELBbits.ANSB2 = 0; //B2 Output
-    ANSELBbits.ANSB3 = 0; //B3 Output
+    TRISAbits.TRISA4 = 0; //A4 Output 
+    
     __builtin_enable_interrupts(); 
     
     i2c_master_setup(); //initial i2c
@@ -187,22 +185,38 @@ void APP_Tasks ( void )
  
         case APP_STATE_SERVICE_TASKS:
         {
-       
+            LATAbits.LATA4=1;
+            RPB13Rbits.RPB13R=0b0101;
             
                  _CP0_SET_COUNT(0);  
-
-       //acceleration value display
-       //sprintf(letter," RED ");
-       //LCD_get(28, 40,letter,ILI9341_RED,ILI9341_WHITE);
-       //sprintf(letter," GREEN ");
-       //LCD_get(28, 50,letter,ILI9341_RED,ILI9341_WHITE);
-       //sprintf(letter," BLUE ");
-      // LCD_get(28, 60,letter,ILI9341_RED,ILI9341_WHITE);
+                 //Plot
      LCD_datagraph(1,30,240,10,R,ILI9341_WHITE,ILI9341_RED);
       LCD_datagraph(1,80,240,10,G,ILI9341_WHITE,ILI9341_GREEN);
        LCD_datagraph(1,130,240,10,B,ILI9341_WHITE,ILI9341_BLUE);
+//Timer 2
+T2CONbits.TCKPS = 0; // Timer2 prescaler N=1 (1:1)
+PR2 = 2399; // PR = PBCLK / N / desiredF - 1
+TMR2 = 0; // initial TMR2 count is 0
+OC1CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
+OC4RS = 600; // duty cycle
+OC4R = 0; // initialize before turning OC1 on; afterward it is read-only
 
-
+      //Timer 3
+    T3CONbits.TCKPS = 0b100;
+    PR3 = 14999; 
+    TMR3 = 0;
+    IEC0bits.T3IE = 1;
+    IPC3bits.T3IP = 5;
+    IPC3bits.T3IS = 0;
+    IFS0bits.T3IF = 0;
+   
+    
+    //Turn on T2 T3 and OC4
+    T2CONbits.ON = 1;
+    T3CONbits.ON = 1;
+    OC4CONbits.ON = 1; 
+    while (1){};
+       
         }
 
         /* TODO: implement your application state machine.*/

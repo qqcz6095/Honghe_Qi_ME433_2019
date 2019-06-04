@@ -571,7 +571,7 @@ void LCD_get(unsigned short x, unsigned short y, char *letter, unsigned letterco
     }
 }
 
-void LCD_datagraph(unsigned short x, unsigned short y, unsigned short L, unsigned short H,int &data, unsigned short barcolor,unsigned short graphcolor){
+void LCD_datagraph(unsigned short x, unsigned short y, unsigned short L, unsigned short H,int *data, unsigned short barcolor,unsigned short graphcolor){
     int i,l,m,n;
     for(m = 0; m < H; m++){
             LCD_drawPixel(x, y - m, barcolor);
@@ -584,7 +584,6 @@ void LCD_datagraph(unsigned short x, unsigned short y, unsigned short L, unsigne
     LCD_drawPixel(x + i, y-data[i+1] , graphcolor);
 }
      sprintf(letter,"RED % d",n);
-      LCD_get(x, y-H-10,letter,graphcolor,ILI9341_WHITE);
-      
+      LCD_get(x, y-H-10,letter,graphcolor,ILI9341_WHITE);    
 }
 
