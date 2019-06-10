@@ -579,11 +579,23 @@ void LCD_datagraph(unsigned short x, unsigned short y, unsigned short L, unsigne
          for(l = 0; l < L; l++){
             LCD_drawPixel(x + l, y , barcolor);
     }
-    n=sizeof(data);
-    for (i=0;i<n;i++){
+    for (i=0;i<240;i++){
     LCD_drawPixel(x + i, y-data[i+1] , graphcolor);
-}
-     sprintf(letter,"RED % d",n);
-      LCD_get(x, y-H-10,letter,graphcolor,ILI9341_WHITE);    
+} 
 }
 
+void __ISR(_TIMER_3_VECTOR,IPL5SOFT)Timer3ISR(void){
+    
+      IFS0bits.T3IF = 0;
+    LATAINV = 0b10000; //invert LED A4
+    static int count = 0;
+    static int direction = 1;
+    count = count + direction;
+    if (count > 100) {//0.1 s
+        direction = -1;
+    }
+    else if (count < 0){
+        direction = 1;
+    }
+    OC4RS = (count * 2399)/100;
+}

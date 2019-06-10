@@ -59,9 +59,9 @@ SUBSTITUTE GOODS, TECHNOLOGY, SERVICES, OR ANY CLAIMS BY THIRD PARTIES
 
 
 char letter[100];
-int R[240];
-int G[240];
-int B[240];
+int R[240]={[0 ... 239]=3};
+int G[240]={[0 ... 239]=7};
+int B[240]={[0 ... 239]=5};
 
 
 
@@ -162,6 +162,8 @@ void APP_Initialize ( void )
     See prototype in app.h.
  */
 
+
+
 void APP_Tasks ( void )
 {
 
@@ -192,29 +194,26 @@ void APP_Tasks ( void )
                  //Plot
      LCD_datagraph(1,30,240,10,R,ILI9341_WHITE,ILI9341_RED);
       LCD_datagraph(1,80,240,10,G,ILI9341_WHITE,ILI9341_GREEN);
-       LCD_datagraph(1,130,240,10,B,ILI9341_WHITE,ILI9341_BLUE);
+       LCD_datagraph(1,131,240,10,B,ILI9341_WHITE,ILI9341_BLUE);
 //Timer 2
 T2CONbits.TCKPS = 0; // Timer2 prescaler N=1 (1:1)
 PR2 = 2399; // PR = PBCLK / N / desiredF - 1
 TMR2 = 0; // initial TMR2 count is 0
-OC1CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
-OC4RS = 600; // duty cycle
+OC4CONbits.OCM = 0b110; // PWM mode without fault pin; other OC1CON bits are defaults
+OC4RS = 100; // duty cycle
 OC4R = 0; // initialize before turning OC1 on; afterward it is read-only
-
+ T2CONbits.ON = 1;
+ OC4CONbits.ON = 1; 
       //Timer 3
     T3CONbits.TCKPS = 0b100;
     PR3 = 14999; 
     TMR3 = 0;
     IEC0bits.T3IE = 1;
-    IPC3bits.T3IP = 5;
-    IPC3bits.T3IS = 0;
     IFS0bits.T3IF = 0;
-   
-    
-    //Turn on T2 T3 and OC4
-    T2CONbits.ON = 1;
-    T3CONbits.ON = 1;
-    OC4CONbits.ON = 1; 
+    IPC3bits.T3IP = 2;
+    IPC3bits.T3IS = 0;
+     T3CONbits.ON = 1;
+ 
     while (1){};
        
         }
