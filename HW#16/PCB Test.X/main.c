@@ -11,7 +11,7 @@
 #pragma config CP = OFF // no code protect
 
 // DEVCFG1
-#pragma config FNOSC = PRIPLL // use primary oscillator wi  th pll
+#pragma config FNOSC = PRIPLL // use primary oscillator with pll
 #pragma config FSOSCEN = OFF // turn off secondary oscillator
 #pragma config IESO = OFF // no switching clocks
 #pragma config POSCMOD = HS // high speed crystal mode
@@ -37,9 +37,14 @@
 #pragma config FUSBIDIO = OFF // USB pins controlled by USB module
 #pragma config FVBUSONIO = OFF // USB BUSON controlled by USB module
 
+
+#include "ili9341.h"
+
 #define DIR1 LATAbits.LATA10
 #define DIR2 LATAbits.LATA7
 #define USER PORTBbits.RB4
+
+
 
 void startup() {
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -68,6 +73,9 @@ void startup() {
     // OC4 is A4, goes with DIR2
     
     // LCD uses SPI1: A0 is SDO, A1 is SDI, B5 is CST, B14 is SCK1, A9 is DC, B7 is CS
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(ILI9341_DARKGREEN);
     
     // Camera uses C0-7, C8 as OC2, A8 as INT3/PCLK, B13 as INT2/HREF, C9 as INT1/VSYNC, and I2C1
     
@@ -86,6 +94,9 @@ int main() {
 
     __builtin_enable_interrupts();
     
+    int I = 0;
+    char message[100];
+    
        
     while(1) {
 
@@ -102,5 +113,10 @@ int main() {
         }
         DIR1 = 1;
         DIR2 = 0;
+        
+        I++;
+        sprintf(message,"I = %d   ", I);
+        drawString(140,92,message);
+
     }
 }
