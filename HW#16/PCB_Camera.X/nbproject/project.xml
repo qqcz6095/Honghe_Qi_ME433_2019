@@ -3,7 +3,7 @@
     <type>com.microchip.mplab.nbide.embedded.makeproject</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
-            <name>PCB_Camera</name>
+            <name>PCB_Project</name>
             <creation-uuid>f4a3a8c5-fcd5-4f24-bdd7-458e608a3c13</creation-uuid>
             <make-project-type>0</make-project-type>
             <c-extensions>c</c-extensions>
